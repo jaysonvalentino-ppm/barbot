@@ -81,6 +81,31 @@ def ws_shots(booze_id):
 
     return ""
 
+@app.route('/ws/shots_test/<int:booze_id>')
+def ws_shots(booze_id):
+    if app.options.must_login_to_dispense and not current_user.is_authenticated():
+        return "login required"
+
+    dispensers = db.session.query(Dispenser).all()
+    dispenser = None
+    for d in dispensers:
+        if d.booze.id == booze_id:
+            dispenser = d
+
+    if not dispenser:
+        return "this booze is not available"
+
+    try:
+        app.mixer.dispense_shot(dispenser, app.options.shot_size)
+    except mixer.BartendroCantPourError, err:
+        raise BadRequest(err)
+    except mixer.BartendroBrokenError, err:
+        raise InternalServerError(err)
+    except mixer.BartendroBusyError, err:
+        raise ServiceUnavailable(err)
+
+    return ""
+
 @app.route('/ws/drink/<int:id>/load')
 @login_required
 def ws_drink_load(id):
