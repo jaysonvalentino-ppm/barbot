@@ -82,7 +82,7 @@ def ws_shots(booze_id):
     return ""
 
 @app.route('/ws/shotsnew/<int:booze_id>')
-def ws_shots(booze_id):
+def ws_shotsnew(booze_id):
     if app.options.must_login_to_dispense and not current_user.is_authenticated():
         return "login required"
 
