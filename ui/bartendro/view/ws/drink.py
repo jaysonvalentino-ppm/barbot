@@ -101,8 +101,8 @@ def ws_shotsnew(booze_id):
         raise BadRequest(err)
     except mixer.BartendroBrokenError, err:
         raise InternalServerError(err)
-    #except mixer.BartendroBusyError, err:
-        #raise ServiceUnavailable(err)
+    except mixer.BartendroBusyError, err:
+        raise ServiceUnavailable(err)
 
     return ""
 
